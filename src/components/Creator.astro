@@ -1,0 +1,362 @@
+---
+/** Parte A — lo usa la dueña al vender. En español, pensado para el móvil. */
+import Hero from './Hero.astro';
+import { ASSETS, LIMITS, LLAMAS, SCENES } from '../lib/config';
+---
+
+<main class="creator" data-view="creator" lang="es">
+  <header class="creator__top">
+    <p class="creator__brand">🦙 Happy Llama</p>
+    <h1>Tarjeta de recuerdo</h1>
+    <p>Escribe el mensaje, elige llama y fondo, y copia el enlace para el colgante.</p>
+  </header>
+
+  <section class="preview" aria-label="Vista previa de la tarjeta">
+    <Hero />
+    <div class="note">
+      <p class="note__kicker">A keepsake from Galway</p>
+      <p class="note__message" data-preview-message></p>
+      <p class="note__from" data-preview-from></p>
+    </div>
+  </section>
+
+  <form class="form" data-form novalidate>
+    <label class="field">
+      <span class="field__label">Mensaje <small data-count>0/{LIMITS.message}</small></span>
+      <textarea
+        name="message"
+        rows="3"
+        maxlength={LIMITS.message}
+        placeholder="I was in Galway and thought of you 🦙"
+        required></textarea>
+    </label>
+
+    <label class="field">
+      <span class="field__label">De parte de <small>opcional</small></span>
+      <input name="from" type="text" maxlength={LIMITS.from} placeholder="With love, María" autocomplete="off" />
+    </label>
+
+    <fieldset class="field">
+      <legend class="field__label">Llama</legend>
+      <div class="swatches swatches--llama">
+        {
+          LLAMAS.map((llama, i) => (
+            <label class="swatch">
+              <input type="radio" name="llama" value={i} checked={i === 0} />
+              <img src={ASSETS.llama + llama.file} alt="" loading="lazy" />
+              <span>{llama.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend class="field__label">Fondo</legend>
+      <div class="swatches">
+        {
+          SCENES.map((scene, i) => (
+            <label class="swatch">
+              <input type="radio" name="scene" value={i} checked={i === 0} />
+              <img
+                src={ASSETS.scenes + scene.file}
+                alt=""
+                loading="lazy"
+                style={`background:${scene.color};object-position:${scene.focus}`}
+              />
+              <span>{scene.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <button class="cta" type="submit">Copiar enlace para la pegatina</button>
+    <p class="status" data-status role="status" aria-live="polite"></p>
+
+    <div class="result" data-result hidden>
+      <label class="field">
+        <span class="field__label">Enlace de la tarjeta</span>
+        <textarea data-link rows="3" readonly></textarea>
+      </label>
+      <a class="result__open" data-open target="_blank" rel="noopener">Abrir la tarjeta para probarla</a>
+    </div>
+
+    <p class="help">Graba este enlace en el colgante con NFC Tools.</p>
+  </form>
+</main>
+
+<script>
+  import { buildLink, isViewerUrl, newId } from '../lib/card';
+  import { setLlama, setScene } from '../lib/stage';
+
+  if (!isViewerUrl(location.search)) {
+    const view = document.querySelector<HTMLElement>('[data-view="creator"]')!;
+    const form = view.querySelector<HTMLFormElement>('[data-form]')!;
+    const stage = view.querySelector<HTMLElement>('[data-stage]')!;
+    const message = form.elements.namedItem('message') as HTMLTextAreaElement;
+    const from = form.elements.namedItem('from') as HTMLInputElement;
+    const status = view.querySelector<HTMLElement>('[data-status]')!;
+    const result = view.querySelector<HTMLElement>('[data-result]')!;
+    const link = view.querySelector<HTMLTextAreaElement>('[data-link]')!;
+    const open = view.querySelector<HTMLAnchorElement>('[data-open]')!;
+    const previewMessage = view.querySelector<HTMLElement>('[data-preview-message]')!;
+    const previewFrom = view.querySelector<HTMLElement>('[data-preview-from]')!;
+    const count = view.querySelector<HTMLElement>('[data-count]')!;
+
+    const picked = (name: string) => Number(new FormData(form).get(name) ?? 0);
+    let shown = { scene: -1, llama: -1 };
+
+    const preview = () => {
+      previewMessage.textContent = message.value.trim() || message.placeholder;
+      previewMessage.classList.toggle('is-empty', !message.value.trim());
+      previewFrom.textContent = from.value.trim();
+      previewFrom.hidden = !from.value.trim();
+      count.textContent = `${message.value.length}/${message.maxLength}`;
+
+      const next = { scene: picked('scene'), llama: picked('llama') };
+      if (next.scene !== shown.scene) setScene(stage, next.scene);
+      if (next.llama !== shown.llama) setLlama(stage, next.llama);
+      shown = next;
+    };
+
+    const copy = async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        // Navegadores antiguos o sin permiso: selección + copiar clásico.
+        link.focus();
+        link.select();
+        try {
+          return document.execCommand('copy');
+        } catch {
+          return false;
+        }
+      }
+    };
+
+    form.addEventListener('input', () => {
+      preview();
+      // El enlace mostrado ya no corresponde a lo que hay escrito.
+      result.hidden = true;
+      status.textContent = '';
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      if (!message.value.trim()) {
+        status.textContent = 'Escribe primero el mensaje.';
+        status.dataset.kind = 'error';
+        message.focus();
+        return;
+      }
+      const url = buildLink(location.origin + location.pathname, {
+        id: newId(),
+        message: message.value.trim(),
+        from: from.value.trim(),
+        scene: picked('scene'),
+        llama: picked('llama'),
+      });
+      link.value = url;
+      open.href = url;
+      result.hidden = false;
+      const copied = await copy(url);
+      status.dataset.kind = copied ? 'ok' : 'error';
+      status.textContent = copied
+        ? '¡Enlace copiado! Ya puedes pegarlo en NFC Tools.'
+        : 'No se pudo copiar solo: mantén pulsado el enlace de abajo y cópialo a mano.';
+    });
+
+    preview();
+  }
+</script>
+
+<style>
+  .creator {
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: calc(1.2rem + env(safe-area-inset-top)) 1rem calc(2rem + env(safe-area-inset-bottom));
+  }
+  .creator__top h1 {
+    margin: 0.1rem 0 0.3rem;
+    font-size: 1.9rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .creator__top p {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+  .creator__top .creator__brand {
+    color: var(--pink-ink);
+    font-weight: 800;
+  }
+
+  .preview {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 3;
+    margin: 1.1rem 0;
+    overflow: hidden;
+    border-radius: 1.4rem;
+    background: var(--paper);
+    box-shadow: 0 10px 30px rgb(42 34 48 / 0.16);
+  }
+  .preview :global(.stage) {
+    height: 180px;
+  }
+  .preview .note {
+    padding: 0 1rem 0.9rem;
+  }
+  .preview :global(.note__message) {
+    font-size: 1.05rem;
+  }
+  .preview :global(.note__message.is-empty) {
+    opacity: 0.45;
+  }
+
+  .form {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .field__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    width: 100%;
+    padding: 0;
+    font-weight: 800;
+  }
+  .field__label small {
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  textarea,
+  input[type='text'] {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border: 2px solid #e3d8dd;
+    border-radius: 0.9rem;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem; /* ≥16px: evita el zoom de iOS al enfocar */
+    resize: vertical;
+  }
+  textarea:focus-visible,
+  input[type='text']:focus-visible {
+    outline: 3px solid var(--pink);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .swatch {
+    position: relative;
+    display: grid;
+    gap: 0.2rem;
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+  }
+  .swatch input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .swatch img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 0.9rem;
+    border: 3px solid transparent;
+    box-shadow: 0 0 0 1px #e3d8dd;
+  }
+  .swatches--llama img {
+    object-fit: contain;
+    background: var(--paper-2);
+    padding: 0.3rem;
+  }
+  .swatch input:checked + img {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 1px var(--pink);
+  }
+  .swatch input:focus-visible + img {
+    outline: 3px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .cta {
+    min-height: 3.4rem;
+    padding: 0.8rem 1.2rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--pink);
+    color: #fff;
+    font: inherit;
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #c4006a;
+    transition:
+      transform 0.1s,
+      box-shadow 0.1s;
+  }
+  .cta:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #c4006a;
+  }
+  .cta:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+  .status {
+    min-height: 1.4em;
+    margin: -0.3rem 0 0;
+    font-weight: 700;
+    text-align: center;
+  }
+  .status[data-kind='ok'] {
+    color: #17703f;
+  }
+  .status[data-kind='error'] {
+    color: #b3261e;
+  }
+  .result {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .result textarea {
+    font-size: 0.85rem;
+    word-break: break-all;
+  }
+  .result__open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    color: var(--pink-ink);
+    font-weight: 800;
+  }
+  .help {
+    margin: 0;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+</style>

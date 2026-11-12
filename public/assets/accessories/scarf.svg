@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130">
+  <!-- Bufanda. El centro del cuello cae en (100,29) -->
+  <g stroke="#2a2230" stroke-width="3" stroke-linejoin="round">
+    <!-- caída -->
+    <path d="M122 50l-6 62h36l4-66z" fill="#ff0088"/>
+    <path d="M118 96l-1 12h36l1-12z" fill="#ffd23f"/>
+    <path d="M119 112v14m9-14v14m9-14v14m9-14v14" fill="none" stroke-width="4" stroke-linecap="round"/>
+    <!-- vuelta al cuello -->
+    <path d="M6 8q94 34 188 0l2 30q-96 40-192 0z" fill="#ff0088"/>
+    <!-- nudo -->
+    <rect x="112" y="34" width="42" height="26" rx="10" fill="#e00077"/>
+  </g>
+  <path d="M40 22l-3 30M72 30l-2 32M104 33v32M168 20l3 30" stroke="#ffd23f" stroke-width="7" stroke-linecap="round"/>
+  <path d="M56 26l-2 32M88 32l-1 32" stroke="#19b5a8" stroke-width="7" stroke-linecap="round"/>
+</svg>

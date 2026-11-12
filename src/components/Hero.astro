@@ -1,0 +1,47 @@
+---
+/**
+ * Héroe: llama real sobre una escena, con balanceo, parallax y reacción al
+ * pulsar. La lógica vive en src/lib/hero.ts (expone window.onHeroTap()).
+ * Los estilos están en global.css (.stage) porque las capas se crean en cliente.
+ */
+interface Props {
+  /** Muestra la pista "Tap me!" (solo en el visor). */
+  hint?: boolean;
+}
+const { hint = false } = Astro.props;
+---
+
+<div class="stage" data-stage>
+  <div class="stage__scene" data-scene><img alt="" decoding="async" /></div>
+  <div class="stage__fade"></div>
+
+  <button class="stage__llama" type="button" data-hero-tap aria-label="Tap the llama">
+    <span class="stage__shadow"></span>
+    <span class="llama" data-llama>
+      <img class="llama__photo" data-llama-photo alt="" decoding="async" />
+      <!-- Llama de reserva: solo se ve si falta la foto real -->
+      <svg class="llama__placeholder" viewBox="0 0 120 160" aria-hidden="true">
+        <ellipse cx="60" cy="112" rx="38" ry="36" fill="#f3e3cf"></ellipse>
+        <rect x="42" y="40" width="36" height="70" rx="18" fill="#f3e3cf"></rect>
+        <ellipse cx="60" cy="38" rx="26" ry="24" fill="#f7ead9"></ellipse>
+        <ellipse cx="38" cy="18" rx="7" ry="12" fill="#5a3b2e" transform="rotate(-18 38 18)"></ellipse>
+        <ellipse cx="82" cy="18" rx="7" ry="12" fill="#5a3b2e" transform="rotate(18 82 18)"></ellipse>
+        <ellipse cx="60" cy="46" rx="13" ry="10" fill="#fff"></ellipse>
+        <circle cx="49" cy="36" r="3.4" fill="#2a2230"></circle>
+        <circle cx="71" cy="36" r="3.4" fill="#2a2230"></circle>
+        <path d="M60 43v5m-5 2q5 4 10 0" stroke="#2a2230" stroke-width="2" fill="none" stroke-linecap="round"></path>
+        <rect x="38" y="138" width="14" height="20" rx="7" fill="#e9d5bc"></rect>
+        <rect x="68" y="138" width="14" height="20" rx="7" fill="#e9d5bc"></rect>
+      </svg>
+      <span class="llama__layers" data-layers></span>
+    </span>
+  </button>
+
+  {hint && <span class="stage__hint" aria-hidden="true">Tap me!</span>}
+  <div class="stage__sparks" data-sparks aria-hidden="true"></div>
+</div>
+
+<script>
+  import { initHero } from '../lib/hero';
+  initHero();
+</script>

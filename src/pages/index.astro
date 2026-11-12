@@ -1,0 +1,36 @@
+---
+/**
+ * Raíz única: el HTML es siempre el mismo y el modo se decide en cliente.
+ * Con ?t o ?id en la URL → Visor; sin parámetros → Creador.
+ */
+import '@fontsource-variable/nunito';
+import '../styles/global.css';
+import Creator from '../components/Creator.astro';
+import Viewer from '../components/Viewer.astro';
+
+const icon =
+  "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦙</text></svg>";
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#FF0088" />
+    <!-- El mensaje va en la URL: ni buscadores ni cabecera Referer deben verlo. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" href={icon} />
+    <title>Happy Llama · Tarjeta de recuerdo</title>
+    <script is:inline>
+      // Antes de pintar, para que no parpadee el modo equivocado.
+      document.documentElement.dataset.mode = /[?&](t|id)=/.test(location.search) ? 'viewer' : 'creator';
+    </script>
+  </head>
+  <body>
+    <Creator />
+    <Viewer />
+    <noscript><p class="noscript">This keepsake needs JavaScript to open. · Activa JavaScript para ver la tarjeta.</p></noscript>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <!-- Ojos en (50,40) y (150,40) -->
+  <path d="M14 30 2 24M186 30l12-6" stroke="#ff0088" stroke-width="7" stroke-linecap="round"/>
+  <path d="M84 34q16-10 32 0" fill="none" stroke="#ff0088" stroke-width="8" stroke-linecap="round"/>
+  <g stroke="#ff0088" stroke-width="8" stroke-linejoin="round" fill="#ffb3d9">
+    <path d="M50 70C6 44 8 10 32 10c9 0 15 5 18 12 3-7 9-12 18-12 24 0 26 34-18 60z"/>
+    <path d="M150 70c-44-26-42-60-18-60 9 0 15 5 18 12 3-7 9-12 18-12 24 0 26 34-18 60z"/>
+  </g>
+  <path d="M28 30q2-9 10-10M128 30q2-9 10-10" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Gorrito peruano. La coronilla de la llama cae en (100,76) -->
+  <g stroke="#2a2230" stroke-width="3" stroke-linejoin="round">
+    <!-- borlas -->
+    <path d="M44 160v22M156 160v22" fill="none" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="44" cy="186" r="9" fill="#ffd23f"/>
+    <circle cx="156" cy="186" r="9" fill="#ffd23f"/>
+    <!-- orejeras -->
+    <path d="M30 104q-10 44 14 60 20-14 20-58z" fill="#ff0088"/>
+    <path d="M170 104q10 44-14 60-20-14-20-58z" fill="#ff0088"/>
+    <!-- casquete -->
+    <path d="M28 112q0-66 72-66t72 66z" fill="#e8283c"/>
+    <path d="M28 112q72-16 144 0v-10q-72-16-144 0z" fill="#ffd23f"/>
+    <!-- pompón -->
+    <circle cx="100" cy="42" r="14" fill="#fff"/>
+  </g>
+  <!-- cenefa -->
+  <path d="M42 84l10-10 10 10 10-10 10 10 10-10 10 10 10-10 10 10 10-10 10 10 10-10 10 10" fill="none" stroke="#19b5a8" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M60 64h80" stroke="#fff" stroke-width="4" stroke-dasharray="6 8" stroke-linecap="round"/>
+  <path d="M40 128l8 8 8-8M144 128l8 8 8-8" fill="none" stroke="#ffd23f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

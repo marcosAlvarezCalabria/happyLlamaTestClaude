@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
+  <!-- Pajarita. Centro en (100,60) -->
+  <g stroke="#2a2230" stroke-width="5" stroke-linejoin="round">
+    <path d="M96 60 18 14q-12 46 0 92z" fill="#ff0088"/>
+    <path d="M104 60l78-46q12 46 0 92z" fill="#ff0088"/>
+    <rect x="78" y="36" width="44" height="48" rx="14" fill="#e00077"/>
+  </g>
+  <g fill="#fff">
+    <circle cx="40" cy="44" r="6"/><circle cx="56" cy="72" r="6"/><circle cx="34" cy="80" r="5"/>
+    <circle cx="160" cy="44" r="6"/><circle cx="144" cy="72" r="6"/><circle cx="166" cy="80" r="5"/>
+  </g>
+</svg>

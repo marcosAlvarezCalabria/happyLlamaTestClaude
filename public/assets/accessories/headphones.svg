@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160">
+  <!-- Auriculares. La coronilla de la llama cae en (100,22) -->
+  <path d="M28 104q0-86 72-86t72 86" fill="none" stroke="#2a2230" stroke-width="13" stroke-linecap="round"/>
+  <path d="M60 34q40-22 80 0" fill="none" stroke="#ff0088" stroke-width="7" stroke-linecap="round"/>
+  <g stroke="#2a2230" stroke-width="4">
+    <rect x="8" y="82" width="42" height="68" rx="19" fill="#ff0088"/>
+    <rect x="150" y="82" width="42" height="68" rx="19" fill="#ff0088"/>
+  </g>
+  <rect x="18" y="96" width="12" height="40" rx="6" fill="#fff" fill-opacity=".55"/>
+  <rect x="160" y="96" width="12" height="40" rx="6" fill="#fff" fill-opacity=".55"/>
+</svg>

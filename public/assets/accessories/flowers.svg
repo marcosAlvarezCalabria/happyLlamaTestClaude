@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <!-- Corona de flores. La coronilla de la llama cae en (100,24) -->
+  <defs>
+    <g id="f">
+      <circle cx="0" cy="-10" r="8"/><circle cx="9.5" cy="-3" r="8"/><circle cx="6" cy="8" r="8"/>
+      <circle cx="-6" cy="8" r="8"/><circle cx="-9.5" cy="-3" r="8"/>
+      <circle r="6" fill="#ffd23f"/>
+    </g>
+  </defs>
+  <path d="M14 66Q100-6 186 66" fill="none" stroke="#3f9b4b" stroke-width="7" stroke-linecap="round"/>
+  <g fill="#3f9b4b">
+    <ellipse cx="42" cy="38" rx="10" ry="5" transform="rotate(-40 42 38)"/>
+    <ellipse cx="158" cy="38" rx="10" ry="5" transform="rotate(40 158 38)"/>
+    <ellipse cx="80" cy="20" rx="10" ry="5" transform="rotate(-12 80 20)"/>
+    <ellipse cx="120" cy="20" rx="10" ry="5" transform="rotate(12 120 20)"/>
+  </g>
+  <use href="#f" x="22" y="56" fill="#ff0088"/>
+  <use href="#f" x="58" y="34" fill="#fff"/>
+  <use href="#f" x="100" y="26" fill="#ff0088" transform="translate(-25 -6.5) scale(1.25)"/>
+  <use href="#f" x="142" y="34" fill="#fff"/>
+  <use href="#f" x="178" y="56" fill="#ff0088"/>
+</svg>

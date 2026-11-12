@@ -1,0 +1,111 @@
+---
+/**
+ * Bandeja de accesorios para vestir la llama del héroe.
+ * La lógica (toggle, uno por categoría, guardado) está en src/lib/dressup.ts
+ * y la arranca Viewer.astro cuando ya conoce el id de la tarjeta.
+ */
+import { ACCESSORIES, ASSETS } from '../lib/config';
+---
+
+<section class="tray" data-tray aria-label="Dress up the llama">
+  <div class="tray__head">
+    <h2>Dress me up!</h2>
+    <button class="tray__clear" type="button" data-clear disabled>Start over</button>
+  </div>
+  <div class="tray__row">
+    {
+      ACCESSORIES.map((acc) => (
+        <button class="tray__item" type="button" data-acc={acc.id} aria-pressed="false" aria-label={acc.label}>
+          <img src={ASSETS.accessories + acc.file} alt="" />
+        </button>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .tray {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-top: auto;
+    padding: 0.6rem 0 calc(0.7rem + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.96);
+    border-radius: 1.4rem 1.4rem 0 0;
+    box-shadow: 0 -6px 24px rgb(42 34 48 / 0.12);
+  }
+  .tray__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+  }
+  .tray__clear {
+    min-height: 44px;
+    padding: 0 0.6rem;
+    border: 0;
+    background: none;
+    color: var(--pink-ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tray__clear:disabled {
+    visibility: hidden;
+  }
+  .tray__row {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding: 0.3rem 1rem 0.4rem;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tray__row::-webkit-scrollbar {
+    display: none;
+  }
+  .tray__item {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    padding: 0.55rem;
+    border: 3px solid transparent;
+    border-radius: 1.2rem;
+    background: var(--paper-2);
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition:
+      border-color 0.15s,
+      background-color 0.15s,
+      transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .tray__item img {
+    max-width: 100%;
+    max-height: 100%;
+    pointer-events: none;
+  }
+  .tray__item:active {
+    transform: scale(0.92);
+  }
+  .tray__item[aria-pressed='true'] {
+    border-color: var(--pink);
+    background: #ffe3f1;
+  }
+  .tray__item:global(.is-boop) {
+    animation: tray-boop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes tray-boop {
+    40% {
+      transform: scale(1.14) rotate(-4deg);
+    }
+  }
+</style>

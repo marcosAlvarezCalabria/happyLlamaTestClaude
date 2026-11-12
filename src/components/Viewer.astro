@@ -1,0 +1,82 @@
+---
+/** Parte B — lo que ve quien recibe la llama al tocar el NFC. En inglés. */
+import Hero from './Hero.astro';
+import LlamaDressup from './LlamaDressup.astro';
+---
+
+<main class="viewer" data-view="viewer" lang="en">
+  <Hero hint />
+
+  <section class="note">
+    <p class="note__kicker">A keepsake from Galway</p>
+    <h1 class="note__message" data-message></h1>
+    <p class="note__from" data-from></p>
+  </section>
+
+  <LlamaDressup />
+
+  <footer class="foot">
+    <span>🦙 Happy Llama</span>
+    <a href="https://happyllama.ie" target="_blank" rel="noopener noreferrer">Discover Happy Llama</a>
+  </footer>
+</main>
+
+<script>
+  import { isViewerUrl, parseCard } from '../lib/card';
+  import { initDressup } from '../lib/dressup';
+  import { setLlama, setScene } from '../lib/stage';
+
+  if (isViewerUrl(location.search)) {
+    const card = parseCard(location.search);
+    const view = document.querySelector<HTMLElement>('[data-view="viewer"]')!;
+    const stage = view.querySelector<HTMLElement>('[data-stage]')!;
+    const from = view.querySelector<HTMLElement>('[data-from]')!;
+
+    // textContent: el mensaje viene de la URL y nunca se interpreta como HTML.
+    view.querySelector('[data-message]')!.textContent = card.message || 'Someone was thinking of you';
+    from.textContent = card.from;
+    from.hidden = !card.from;
+
+    setScene(stage, card.scene);
+    setLlama(stage, card.llama);
+    initDressup(stage, view.querySelector<HTMLElement>('[data-tray]')!, card.id);
+
+    document.documentElement.lang = 'en';
+    document.title = 'A keepsake from Galway · Happy Llama';
+  }
+</script>
+
+<style>
+  /* display:flex lo pone global.css según el modo */
+  .viewer {
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: 34rem;
+    margin: 0 auto;
+    background: var(--paper);
+  }
+  .viewer :global(.stage) {
+    height: clamp(300px, 56vh, 540px);
+    height: clamp(300px, 56dvh, 540px);
+  }
+  .foot {
+    order: 1; /* tras la bandeja fija */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem 1rem;
+    padding: 0.4rem 1rem calc(0.9rem + env(safe-area-inset-bottom));
+    background: #fff;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--pink-ink);
+  }
+</style>
